@@ -25,7 +25,25 @@ export const app = express();
 
 app.disable("x-powered-by");
 app.use(helmet());
-app.use(cors({ origin: env.FRONTEND_URL, credentials: true }));
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://audvertax-olive.vercel.app",
+  env.FRONTEND_URL,
+].filter(Boolean);
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like Postman or mobile apps)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000,
