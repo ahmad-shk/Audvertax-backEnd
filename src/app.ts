@@ -42,7 +42,7 @@ app.use(
       }
     },
     credentials: true,
-  })
+  }),
 );
 app.use(
   rateLimit({
